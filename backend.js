@@ -95,10 +95,17 @@ const {restInterceptor} = require('zipkin-instrumentation-cujojs-rest');
 const zipkinRest = rest.wrap(restInterceptor, {tracer, serviceName: 'backend'});
 console.log(zipkinRest);
 app.get('/api', (req, res) => {
+  console.log(12345);
   zipkinRest('http://localhost:8082/doservice/123')
     .then(response => res.send(response.entity))
     .catch(err => console.error('Error', err.stack));
 });
+
+app.get('/api1', (req, res) => {
+  console.log(12345);
+  res.send(12345);
+});
+
 
 app.listen(9000, () => {
   console.log('Backend listening on port 9000!');

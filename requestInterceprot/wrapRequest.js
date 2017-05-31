@@ -7,7 +7,7 @@ function wrapRequest(request, {tracer, serviceName = 'unknown', remoteServiceNam
       tracer.scoped(() => {
         tracer.setId(tracer.createChildId());
         const traceId = tracer.id;
-
+        // console.log(traceId);
         const method = opts.method || 'GET';
         tracer.recordServiceName(serviceName);
         tracer.recordRpc(method.toUpperCase());
@@ -22,11 +22,11 @@ function wrapRequest(request, {tracer, serviceName = 'unknown', remoteServiceNam
 
         const zipkinOpts = Request.addZipkinHeaders(opts, traceId);
         request(zipkinOpts, (err, httpResponse, response) => {
-          tracer.scoped(() => {
-            tracer.setId(traceId);
-            tracer.recordBinary('http.status_code', httpResponse.statusCode.toString());
-            tracer.recordAnnotation(new Annotation.ClientRecv());
-          });
+          // tracer.scoped(() => {
+          tracer.setId(traceId);
+          tracer.recordBinary('http.status_code', httpResponse.statusCode.toString());
+          tracer.recordAnnotation(new Annotation.ClientRecv());
+          // });
           if (err) return reject(err);
           resolve(response);
         });

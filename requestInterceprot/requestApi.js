@@ -35,14 +35,25 @@ app.use((req, res, next) => {
 });
 
 app.get('/api', (req, res) => {
+  // console.log(tracer);
+      // tracer.scoped(() => {
+  zipkinRequest({url: 'http://localhost:9000/api1'}, tracer)
+        .then((respon) => {
+          console.log(respon);
+        }).catch(err => console.error('Error', err.stack));
   zipkinRequest({url: 'http://localhost:8082/doservice/123'}, tracer)
-    .then((response) => {
-      console.log(response);
-      res.send(response);
+    .then(() => {
+      console.log(123);
+      // tracer.scoped(() => {
+      zipkinRequest({url: 'http://localhost:9000/api'}, tracer)
+        .then((respon) => {
+          console.log(respon);
+          res.send(respon);
+        });
     })
     .catch(err => console.error('Error', err.stack));
 });
 
 app.listen(9001, () => {
-  console.log('Frontend listening on port 9001!');
+  console.log('requestBackend listening on port 9001!');
 });
